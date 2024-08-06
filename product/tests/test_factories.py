@@ -56,7 +56,7 @@ class TestProductFactory(TestCase):
 
 class TestCategoryFactory(TestCase):
     def test_category_factory_creates_fields(self):
-        category = CategoryFactory()
+        category = CategoryFactory(active=True)
 
         self.assertTrue(category.title)
         self.assertTrue(category.slug)
