@@ -39,6 +39,7 @@ class TestProductFactory(TestCase):
         product = ProductFactory(
             category=[
                 category_three, category_one])
+
         product_categories = []
         for cat in product.category.all():
             product_categories.append(cat.title)
@@ -52,6 +53,13 @@ class TestProductFactory(TestCase):
         self.assertNotIn(
             category_two.title, product_categories,
             msg="Not expected category title found in product categories")
+
+    def test_product_factory_not_created_return(self):
+        category_one = CategoryFactory(title='First Product')
+
+        product = ProductFactory.build(category=[category_one,])
+
+        self.assertFalse(product.id, msg='An unexpected ID was found.')
 
 
 class TestCategoryFactory(TestCase):

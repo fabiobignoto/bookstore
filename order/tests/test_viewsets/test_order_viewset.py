@@ -46,7 +46,7 @@ class TestOrderViewSet(APITestCase):
         response = self.client.post(
             reverse('order-list', kwargs={'version': 'v1'}),
             data=data,
-            format='application/json'
+            content_type='application/json'
         )
 
         self.assertEqual(
