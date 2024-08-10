@@ -9,6 +9,7 @@ class OrderFactoryTest(TestCase):
 
         order = OrderFactory()
         self.assertTrue(order.user, msg="Order's User is equivalent to False.")
+
         self.assertTrue(
             order.product, msg="Order's Product is equivalent to False.")
 
@@ -45,6 +46,13 @@ class OrderFactoryTest(TestCase):
             len(product_list),
             msg='Wrong number of products found in the order.'
         )
+
+    def test_order_factory_not_created_return(self):
+        product_one = ProductFactory(title='First Product')
+
+        order = OrderFactory.build(product=[product_one,])
+
+        self.assertFalse(order.id, msg='An unexpected ID was found.')
 
 
 class UserFactoryTest(TestCase):
