@@ -1,6 +1,7 @@
 import json
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
+from rest_framework.authtoken.models import Token
 
 from django.urls import reverse
 
@@ -17,9 +18,16 @@ class TestOrderViewSet(APITestCase):
         self.category = CategoryFactory(title='Technology')
         self.product = ProductFactory(
             title='Mouse', price=100, category=[self.category])
+
+        self.user = UserFactory()
+        self.token = Token.objects.create(user=self.user)
+        self.token.save()
+
         self.order = OrderFactory(product=[self.product])
 
     def test_order(self):
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         response = self.client.get(
             reverse('order-list', kwargs={'version': 'v1'}))
         self.assertEqual(
@@ -27,20 +35,21 @@ class TestOrderViewSet(APITestCase):
             status.HTTP_200_OK,
             msg='Unexpected status code returned.')
 
-        order_data = json.loads(response.content)[0]
-        self.assertEqual(order_data['product'][0]['title'], self.product.title)
-        self.assertEqual(order_data['product'][0]['price'], self.product.price)
-        self.assertEqual(order_data['product'][0]
+        order_data = json.loads(response.content)['results'][0]['product'][0]
+        self.assertEqual(order_data['title'], self.product.title)
+        self.assertEqual(order_data['price'], self.product.price)
+        self.assertEqual(order_data
                          ['active'], self.product.active)
-        self.assertEqual(order_data['product'][0]
+        self.assertEqual(order_data
                          ['category'][0]['title'], self.category.title)
 
     def test_create_order(self):
-        user = UserFactory()
-        product = ProductFactory()
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
         data = json.dumps({
-            'products_id': [product.id],
-            'user': user.id
+            'products_id': [self.product.id],
+            'user': self.user.id
         })
 
         response = self.client.post(
@@ -56,4 +65,22 @@ class TestOrderViewSet(APITestCase):
 
         )
 
-        created_order = Order.objects.get(user=user)
+        created_order = Order.objects.get(user=self.user)
+
+        self.assertEqual(
+            len(created_order.product.all()),
+            1,
+            msg='Unexpected number of products in the created order.'
+        )
+
+        self.assertEqual(
+            created_order.product.all()[0].title,
+            self.product.title,
+            msg='Unexpected Product found in the created order.'
+        )
+
+        self.assertEqual(
+            created_order.user.username,
+            self.user.username,
+            msg='Unexpected User found in the created order.'
+        )

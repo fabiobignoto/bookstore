@@ -23,9 +23,9 @@ class TestOrderViewSet(APITestCase):
             status.HTTP_200_OK,
             msg='Unexpected status code returned.')
 
-        category_data = json.loads(response.content)
+        category_data = json.loads(response.content)['results'][0]
 
-        self.assertEqual(category_data[0]['title'], self.category.title)
+        self.assertEqual(category_data['title'], self.category.title)
 
     def test_create_category(self):
 
