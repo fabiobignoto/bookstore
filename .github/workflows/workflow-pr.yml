@@ -22,8 +22,8 @@ jobs:
         run: poetry --help
       - name: Set up Docker
         run: |
-        sudo apt-get update
-        sudo apt-get install docker-compose
+          sudo apt-get update
+          sudo apt-get install docker-compose
       - name: Start Docker Compose
         run: docker-compose up -d --build
       - name: Install dependencies
