@@ -18,26 +18,20 @@ jobs:
           poetry install
         env:
           POETRY_VIRTUALENVS_CREATE: false
-
       - name: View poetry --help
         run: poetry --help
-
       - name: Set up Docker
-      run: |
+        run: |
         sudo apt-get update
         sudo apt-get install docker-compose
-
       - name: Start Docker Compose
         run: docker-compose up -d --build
-
       - name: Install dependencies
         shell: bash
         run: poetry install
-
       - name: Test
         run: |
           docker compose exec web python manage.py test
-
       - name: Wemake Python Stylguide
         uses: wemake-services/wemake-python-styleguide@0.16.0
         continue-on-error: true
