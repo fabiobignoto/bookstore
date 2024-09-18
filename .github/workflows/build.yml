@@ -7,8 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.10.11]
-        poetry-version: [1.8.3]
+        python-version: [3.8, 3.9]
 
     runs-on: ubuntu-latest
 
@@ -20,24 +19,19 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install poetry ${{ matrix.poetry-version }}
+    - name: Install poetry
       run: |
         python -m ensurepip
         python -m pip install --upgrade pip
-        python -m pip install poetry==${{ matrix.poetry-version}}
+        python -m pip install --upgrade poetry
 
-    - name: Set up Docker
-      run: |
-        sudo apt-get update
-        sudo apt-get install docker-compose
-
-    - name: Start Docker Compose
-      run: docker-compose up -d --build
+    - name: View poetry --help
+      run: poetry --help
 
     - name: Install dependencies
       shell: bash
-      run: poetry install
+      run: python -m poetry install
 
     - name: Test
       run: |
-        docker compose exec web python manage.py test
+        poetry run python manage.py test
