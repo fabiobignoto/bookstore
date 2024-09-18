@@ -15,6 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.urls import include, path, re_path
+from bookstore import views
 import debug_toolbar
 from django.contrib import admin
 from django.urls import path, re_path, include
@@ -26,4 +28,6 @@ urlpatterns = [
     re_path("bookstore/(?P<version>(v1|v2))/", include("order.urls")),
     re_path("bookstore/(?P<version>(v1|v2))/", include("product.urls")),
     path("api-token-auth/", obtain_auth_token, name="api-token-auth"),
+    path("update_server/", views.update, name="update"),
+    path("hello/", views.hello_world, name="hello_world"),
 ]
