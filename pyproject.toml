@@ -17,6 +17,8 @@ django-debug-toolbar = "^4.4.6"
 psycopg2-binary = "^2.9.9"
 flake8 = "^7.1.1"
 python-dotenv = "^1.0.1"
+gunicorn = "^23.0.0"
+whitenoise = "^6.7.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
